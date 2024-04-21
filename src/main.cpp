@@ -3,8 +3,6 @@
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(800, 600), "Hello World");
-    
-    window.clear(sf::Color::White);
 
     while (window.isOpen())
     {
@@ -16,6 +14,7 @@ int main()
             }
         }
         window.display();
+        window.clear();
     }
 
     return 0;
