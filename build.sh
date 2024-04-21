@@ -1,4 +1,8 @@
+sudo apt update
 sudo apt install \
+    x11-apps \
+    libsfml-dev \
+    libx11-dev \
     libxrandr-dev \
     libxcursor-dev \
     libudev-dev \
