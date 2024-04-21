@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
-project(MySFMLProject)
+project(Minesweeper)
 
 # Установка пути к директории, где будут храниться исходники SFML
 set(SFML_INSTALL_DIR ${CMAKE_BINARY_DIR}/SFML)
+
 
 # Проверяем наличие SFML в директории CMake, если нет - загружаем
 if(NOT EXISTS ${SFML_INSTALL_DIR})
@@ -17,7 +18,7 @@ include_directories(${SFML_INSTALL_DIR}/include)
 add_subdirectory(${SFML_INSTALL_DIR})
 
 # Создаем исполняемый файл из исходников
-add_executable(MySFMLExecutable src/main.cpp)
+add_executable(exec src/main.cpp)
 
 # Линкуем исполняемый файл с библиотеками SFML
-target_link_libraries(MySFMLExecutable sfml-graphics sfml-window sfml-system)
+target_link_libraries(exec sfml-graphics sfml-window sfml-system)
