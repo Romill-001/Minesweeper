@@ -1,20 +1,18 @@
 #include <SFML/Graphics.hpp>
+#include "../headers/Board.hpp"
+#include "../headers/EventHandler.hpp"
+
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Hello World");
-    
+    sf::RenderWindow window(sf::VideoMode(32 * ROW, 32 * COL), "Minesweeper", sf::Style::Titlebar | sf::Style::Close);
+    window.setVerticalSyncEnabled(true);
+    Board board(ROW, COL, BOMBS_C);
+
     while (window.isOpen())
     {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if(event.type == sf::Event::Closed){
-                window.close();
-            }
-        }
-        window.display();
-        window.clear();
+        handleEvent(window, board);
+        renderGame(window, board);
     }
 
     return 0;

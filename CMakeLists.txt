@@ -18,7 +18,7 @@ include_directories(${SFML_INSTALL_DIR}/include)
 add_subdirectory(${SFML_INSTALL_DIR})
 
 # Создаем исполняемый файл из исходников
-add_executable(exec src/main.cpp)
+add_executable(exec src/main.cpp src/EventHandler.cpp src/Board.cpp src/Cell.cpp)
 
 # Линкуем исполняемый файл с библиотеками SFML
 target_link_libraries(exec sfml-graphics sfml-window sfml-system)
