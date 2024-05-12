@@ -13,6 +13,8 @@ void handleMouseButtonPressed(sf::RenderWindow &window, Board &board, sf::Event 
     if (event.mouseButton.button == sf::Mouse::Left) {
         if (!board.gameOver && (mousePosition.y > CELL_SIZE - 1)) {
             board.revealCell(cellPosition.y, cellPosition.x);
+        } else if (board.mineCount - board.foundMines == 0){
+            board.restartButtonClick(mousePosition.x, mousePosition.y);
         } else {
             board.restartButtonClick(mousePosition.x, mousePosition.y);
         }
@@ -25,31 +27,22 @@ void handleMouseButtonPressed(sf::RenderWindow &window, Board &board, sf::Event 
 void handleEvent(sf::RenderWindow &window, Board &board) {
     sf::Event event;
     while(window.pollEvent(event)){
-        switch (event.type)
-        {
+        switch (event.type) {
         case sf::Event::MouseButtonPressed:
             handleMouseButtonPressed(window, board, event);
             break;
         case sf::Event::Closed:
             window.close();
         case sf::Event::KeyPressed:
-            switch (event.key.code)
-            {
-            case sf::Keyboard::R:
-                board.restartBoardR();
-                break;
+            switch (event.key.code){
+                case sf::Keyboard::R:
+                    board.restartBoardR();
+                    break;
+                case sf::Keyboard::Q:
+                    board.switchMode();
+                    break;
             }
-            case sf::Keyboard::Q:
-            board.easyMode = !board.easyMode;
-            if (board.easyMode) {
-                board.mineCount = 135;
-            } else {
-                board.mineCount = 210;
-            }
-            board.restartBoardR();
-            break;
-        }
-        
+        } 
     }
 }
 

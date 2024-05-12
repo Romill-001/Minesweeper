@@ -10,18 +10,27 @@
 #define BOARD_HPP
 
 #define CELL_SIZE 32.0f
-
+#define SCREEN_HEIGHT 672
+#define SCREEN_WIDTH 640
+#define ROWS 20
+#define COLS 20
+#define BOMB_C_EASY 135
+#define BOMB_C_HARD 210
 
 class Board {
 public:
 
     Board();
 
+    void drawSprite(sf::RenderWindow& window, sf::Sprite sprite,  float posX, float posY, int posRectX, int posRectY, int rectW, int rectH);
+
     void draw(sf::RenderWindow& window);
 
     void floodFill(int row, int col);
 
     void lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite);
+
+    void winGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite);
 
     void revealCell(int row, int col);
 
@@ -32,8 +41,10 @@ public:
     void restartBoardR();
 
     void drawStatusBar(sf::RenderWindow& window);
-    int calcNum();
+
     void drawMinesCount(sf::RenderWindow& window);
+
+    void switchMode();
 
     bool gameOver;
     int rows;
