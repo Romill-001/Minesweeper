@@ -9,17 +9,13 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 
-#define ROW 10
-#define COL 10
-#define BOMBS_C 34
 #define CELL_SIZE 32.0f
 
 
 class Board {
 public:
-    bool gameOver;
 
-    Board(int rows, int cols, int mineCount);
+    Board();
 
     void draw(sf::RenderWindow& window);
 
@@ -33,17 +29,22 @@ public:
 
     void restartButtonClick(float x, float y);
 
-    void restartBoardEnter();
+    void restartBoardR();
 
-private:
+    void drawStatusBar(sf::RenderWindow& window);
+    int calcNum();
+    void drawMinesCount(sf::RenderWindow& window);
+
+    bool gameOver;
     int rows;
     int cols;
     int mineCount;
     int revealedCount;
     int step;
-    int foundMines;
+    int foundMines; 
+    bool easyMode;
 
-
+private:
     std::vector<std::vector<Cell>> cells;
 
     void calculateNumbers();

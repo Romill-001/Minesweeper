@@ -5,10 +5,9 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(32 * ROW, 32 * COL), "Minesweeper", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(640, 672), "Minesweeper", sf::Style::Titlebar | sf::Style::Close);
     window.setVerticalSyncEnabled(true);
-    Board board(ROW, COL, BOMBS_C);
-
+    Board board;
     while (window.isOpen())
     {
         handleEvent(window, board);

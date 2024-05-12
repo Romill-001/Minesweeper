@@ -1,8 +1,13 @@
 #include "../headers/Board.hpp"
 #include "../headers/Cell.hpp"
 
-Board::Board(int rows, int cols, int mineCount) 
-    : rows(rows), cols(cols), mineCount(mineCount), revealedCount(0), gameOver(false), step(0) {
+Board::Board() {
+    rows = 20;
+    cols = 20;
+    gameOver = false;
+    easyMode = true;
+    mineCount = 135;
+    foundMines = 0;
     generateBoard();
 }
 
@@ -27,25 +32,27 @@ void Board::draw(sf::RenderWindow& window) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
             if (cells[i][j].type == CellType::Empty && cells[i][j].isRevealed) {
-                eCellSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i));
+                eCellSprite.setScale(static_cast<float>(eCellTexture.getSize().x) / CELL_SIZE, static_cast<float>(eCellTexture.getSize().y) / CELL_SIZE);
+                eCellSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE));
                 eCellSprite.setTextureRect(sf::IntRect(0, 0, CELL_SIZE, CELL_SIZE));
                 window.draw(eCellSprite);
                 if (0 < cells[i][j].minesAround) {
-                    numberSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i));
+                    numberSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE));
                     numberSprite.setTextureRect(sf::IntRect(CELL_SIZE * (cells[i][j].minesAround - 1), 0, CELL_SIZE, CELL_SIZE));
                     window.draw(numberSprite);
                 }
             } else if (cells[i][j].type == CellType::Mine && cells[i][j].isRevealed) {
-                numberSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i));
+                numberSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE));
                 numberSprite.setTextureRect(sf::IntRect(CELL_SIZE * 10, 0, CELL_SIZE, CELL_SIZE));
                 window.draw(numberSprite);
                 gameOver = true;
             } else if (cells[i][j].type == CellType::Flag) {
-                numberSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i));
+                numberSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE));
                 numberSprite.setTextureRect(sf::IntRect(CELL_SIZE * 9, 0, CELL_SIZE, CELL_SIZE));
                 window.draw(numberSprite);
             } else {
-                cellSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i));
+                cellSprite.setScale(static_cast<float>(cellTexture.getSize().x) / CELL_SIZE, static_cast<float>(cellTexture.getSize().y) / CELL_SIZE);
+                cellSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE));
                 cellSprite.setTextureRect(sf::IntRect(0, 0, CELL_SIZE, CELL_SIZE));
                 window.draw(cellSprite);
             }
@@ -54,6 +61,8 @@ void Board::draw(sf::RenderWindow& window) {
     if(gameOver) {
         lostGameScreen(window, numberSprite);
     }
+    drawStatusBar(window);
+    drawMinesCount(window);
     window.display();
 }
 
@@ -74,10 +83,10 @@ void Board::floodFill(int row, int col) {
 }
 
 void Board::lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
-    for (int i = 0; i < ROW; ++i) {
-        for (int j = 0; j < COL; ++j) {
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
             if (cells[i][j].type == CellType::Mine || cells[i][j].type == CellType::Flag) {
-                numberSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i));
+                numberSprite.setPosition(static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE));
                 numberSprite.setTextureRect(sf::IntRect(CELL_SIZE * 10, 0, CELL_SIZE, CELL_SIZE));
                 window.draw(numberSprite);
             }
@@ -90,7 +99,7 @@ void Board::lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
     sf::Texture restartTexture;
     restartTexture.loadFromFile("res/restart_button.png");
     restartSprite.setTexture(restartTexture);
-    restartSprite.setPosition(CELL_SIZE * ROW / 2 - 16, CELL_SIZE * COL / 2 - 16);
+    restartSprite.setPosition(CELL_SIZE * rows / 2 - 16, CELL_SIZE * cols / 2 - 16);
     restartSprite.setTextureRect(sf::IntRect(0,0, CELL_SIZE, CELL_SIZE));
     window.draw(restartSprite);
 
@@ -122,12 +131,19 @@ void Board::putFlag(int row, int col) {
     foundMines++;
 }
 
-void Board::restartBoardEnter() {
+void Board::restartBoardR() {
     if (!gameOver) {
+        gameOver = false;
+        foundMines = 0;
+        cells.clear();
         step = 0;
         generateBoard();
     }
 }
+
+// void drawMineCount(sf::RenderWindow& window) {
+    
+// }
 
 void Board::calculateNumbers() {
     for (int i = 0; i < rows; ++i) {
@@ -178,10 +194,49 @@ void Board::generateBoard() {
 //restartSprite.setPosition(CELL_SIZE * ROW / 2 - 16, CELL_SIZE * COL / 2 - 16);
 
 void Board::restartButtonClick(float x, float y) {\
-    if (x > static_cast<float>(CELL_SIZE * ROW / 2 - 16) && x < static_cast<float>(CELL_SIZE * ROW / 2 + 16) &&
-    y > static_cast<float>(CELL_SIZE * COL / 2 - 16) && y < static_cast<float>(CELL_SIZE * COL / 2 + 16)){
+    if (x > static_cast<float>(CELL_SIZE * rows / 2 - 16) && x < static_cast<float>(CELL_SIZE * cols / 2 + 16) &&
+    y > static_cast<float>(CELL_SIZE * cols / 2 - 16) && y < static_cast<float>(CELL_SIZE * cols / 2 + 16)){
         step = 0;
         gameOver = false;
         generateBoard();
     }
+}
+
+void Board::drawStatusBar(sf::RenderWindow& window) {
+    sf::Sprite statusSprite;
+    sf::Texture statusTexture;
+    std::string str = (easyMode ? "easy" : "hard");
+    statusTexture.loadFromFile("res/status_bar_" + str + ".png");
+    statusSprite.setTexture(statusTexture);
+    statusSprite.setPosition(0, 0);
+    statusSprite.setTextureRect(sf::IntRect(0,0, CELL_SIZE * 20, CELL_SIZE));
+    window.draw(statusSprite);
+}
+
+int Board::calcNum() {
+    int tmp = 0;
+    if (((mineCount - foundMines)/100 - 1) == 0 || ((mineCount - foundMines)/10%10 - 1) == 0 || ((mineCount - foundMines)%10 - 1) == 0) {
+        tmp = 9;
+    } else {
+        tmp = mineCount - foundMines;
+    }
+}
+void Board::drawMinesCount(sf::RenderWindow& window) {
+    sf::Sprite mSpriteA;
+    sf::Sprite mSpriteB;
+    sf::Sprite mSpriteC;
+    sf::Texture Texture;
+    Texture.loadFromFile("res/numbers_for_mines.png");
+    mSpriteA.setTexture(Texture);
+    mSpriteB.setTexture(Texture);
+    mSpriteC.setTexture(Texture);
+    mSpriteA.setPosition(470, 0);
+    mSpriteB.setPosition(470 + CELL_SIZE, 0);
+    mSpriteC.setPosition(470 + 2 * CELL_SIZE, 0);
+    mSpriteA.setTextureRect(sf::IntRect(CELL_SIZE * (((mineCount - foundMines)/100 - 1) == -1 ? 9 : (mineCount - foundMines)/100 - 1),0, CELL_SIZE, CELL_SIZE));
+    mSpriteB.setTextureRect(sf::IntRect(CELL_SIZE * (((mineCount - foundMines)/10%10 - 1) == -1 ? 9 : (mineCount - foundMines)/10%10 - 1),0, CELL_SIZE, CELL_SIZE));
+    mSpriteC.setTextureRect(sf::IntRect(CELL_SIZE * (((mineCount - foundMines)%10 - 1) == -1 ? 9 : (mineCount - foundMines)%10 - 1),0, CELL_SIZE, CELL_SIZE));
+    window.draw(mSpriteA);
+    window.draw(mSpriteB);
+    window.draw(mSpriteC);
 }
