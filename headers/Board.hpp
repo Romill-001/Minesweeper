@@ -54,13 +54,16 @@ public:
     int step;
     int foundMines; 
     bool easyMode;
-
-private:
     std::vector<std::vector<Cell>> cells;
+    
+private:
 
     void calculateNumbers();
 
     void firstMove(int r, int c);
+
+    void firstMoveLogic(int r, int c);
+
 
     void generateBoard();
 };

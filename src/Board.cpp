@@ -126,14 +126,6 @@ void Board::winGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
 void Board::revealCell(int row, int col) {
     if (step == 0) {
         firstMove(row, col);
-        firstMove(row - 1, col);
-        firstMove(row + 1, col);
-        firstMove(row, col - 1);
-        firstMove(row, col + 1);
-        firstMove(row + 1, col + 1);
-        firstMove(row + 1 , col - 1);
-        firstMove(row - 1, col - 1);
-        firstMove(row - 1, col + 1);
         calculateNumbers();
     }
     if (cells[row][col].type == CellType::Mine) {
@@ -179,7 +171,19 @@ void Board::calculateNumbers() {
     }
 }
 
-void Board::firstMove(int r, int c) {
+void Board::firstMove(int row, int col) {
+    firstMoveLogic(row, col);
+    firstMoveLogic(row - 1, col);
+    firstMoveLogic(row + 1, col);
+    firstMoveLogic(row, col - 1);
+    firstMoveLogic(row, col + 1);
+    firstMoveLogic(row + 1, col + 1);
+    firstMoveLogic(row + 1 , col - 1);
+    firstMoveLogic(row - 1, col - 1);
+    firstMoveLogic(row - 1, col + 1);
+}
+
+void Board::firstMoveLogic(int r, int c) {
     if (cells[r][c].type == CellType::Mine) {
         cells[r][c].type = CellType::Empty;
         int row = rand() % rows;
