@@ -159,7 +159,7 @@ void Board::putFlag(int row, int col) {
 }
 
 void Board::restartBoardR() {
-    if (!gameOverLose || !gameOverWin) {
+    if (!gameOverLose && !gameOverWin) {
         gameOverLose = false;
         gameOverWin = false;
         foundMines = 0;

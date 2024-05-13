@@ -14,7 +14,7 @@
 #define SCREEN_WIDTH 640
 #define ROWS 20
 #define COLS 20
-#define BOMB_C_EASY 120
+#define BOMB_C_EASY 135
 #define BOMB_C_HARD 210
 
 class Board {
