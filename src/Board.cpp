@@ -4,7 +4,8 @@
 Board::Board() {
     rows = ROWS;
     cols = COLS;
-    gameOver = false;
+    gameOverWin = false;
+    gameOverLose = false;
     easyMode = true;
     mineCount = BOMB_C_EASY;
     foundMines = 0;
@@ -38,14 +39,16 @@ void Board::draw(sf::RenderWindow& window) {
                 }
             } else if (cells[i][j].type == CellType::Mine && cells[i][j].isRevealed) {
                 drawSprite(window, numberSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), CELL_SIZE * 10, 0, CELL_SIZE, CELL_SIZE);
-                gameOver = true;
+                gameOverLose = true;
             } else if (cells[i][j].type == CellType::Flag) {
+                if (mineCount == foundMines) {gameOverWin = true;}
                 drawSprite(window, numberSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), CELL_SIZE * 9, 0, CELL_SIZE, CELL_SIZE);
             } else {
                 drawSprite(window, cellSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), 0, 0, CELL_SIZE, CELL_SIZE);
             }
         }
     }
+    winGameScreen(window, numberSprite);
     lostGameScreen(window, numberSprite);
     drawStatusBar(window);
     drawMinesCount(window);
@@ -60,7 +63,7 @@ void Board::drawSprite(sf::RenderWindow& window, sf::Sprite sprite, float posX, 
 
 void Board::floodFill(int row, int col) {
     if (row < 0 || row >= rows || col < 0 || col >= cols) return;
-    if (cells[row][col].isRevealed || cells[row][col].type == CellType::Mine || gameOver) return;
+    if (cells[row][col].isRevealed || cells[row][col].type == CellType::Mine || (gameOverLose || gameOverWin)) return;
 
     cells[row][col].isRevealed = true;
     revealedCount++;
@@ -74,7 +77,7 @@ void Board::floodFill(int row, int col) {
 }
 
 void Board::lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
-    if (gameOver) {
+    if (gameOverLose) {
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
                 if (cells[i][j].type == CellType::Mine || cells[i][j].type == CellType::Flag) {
@@ -99,7 +102,7 @@ void Board::lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
 }
 
 void Board::winGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
-    if (mineCount - foundMines == 0) {
+    if (gameOverWin) {
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
                 if (cells[i][j].type == CellType::Mine || cells[i][j].type == CellType::Flag) {
@@ -136,14 +139,19 @@ void Board::revealCell(int row, int col) {
 }
 
 void Board::putFlag(int row, int col) {
-    if (!cells[row][col].isRevealed)
-        cells[row][col].type = CellType::Flag;
-    foundMines++;
+    if (step == 1 && (!gameOverLose && !gameOverWin)) {
+        if (!cells[row][col].isRevealed)
+            cells[row][col].type = CellType::Flag;
+        foundMines++;
+    } else {
+        return;
+    }
 }
 
 void Board::restartBoardR() {
-    if (!gameOver) {
-        gameOver = false;
+    if (!gameOverLose || !gameOverWin) {
+        gameOverLose = false;
+        gameOverWin = false;
         foundMines = 0;
         cells.clear();
         step = 0;
@@ -215,7 +223,8 @@ void Board::restartButtonClick(float x, float y) {\
     if (x > static_cast<float>(CELL_SIZE * rows / 2 - 16) && x < static_cast<float>(CELL_SIZE * cols / 2 + 16) &&
     y > static_cast<float>(CELL_SIZE * cols / 2 - 16) && y < static_cast<float>(CELL_SIZE * cols / 2 + 16)){
         step = 0;
-        gameOver = false;
+        gameOverLose = false;
+        gameOverWin = false;
         foundMines = 0;
         generateBoard();
     }

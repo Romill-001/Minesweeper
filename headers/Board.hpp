@@ -46,7 +46,8 @@ public:
 
     void switchMode();
 
-    bool gameOver;
+    bool gameOverWin;
+    bool gameOverLose;
     int rows;
     int cols;
     int mineCount;

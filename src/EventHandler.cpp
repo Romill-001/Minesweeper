@@ -11,11 +11,10 @@ void handleMouseButtonPressed(sf::RenderWindow &window, Board &board, sf::Event 
     sf::Vector2i mousePosition = {event.mouseButton.x, event.mouseButton.y};
     sf::Vector2i cellPosition = getCellPosition(mousePosition);
     if (event.mouseButton.button == sf::Mouse::Left) {
-        if (!board.gameOver && (mousePosition.y > CELL_SIZE - 1)) {
+        if ((!board.gameOverLose || !board.gameOverWin) && (mousePosition.y > CELL_SIZE - 1)) {
             board.revealCell(cellPosition.y, cellPosition.x);
-        } else if (board.mineCount - board.foundMines == 0){
-            board.restartButtonClick(mousePosition.x, mousePosition.y);
-        } else {
+        }
+        if (board.gameOverWin || board.gameOverLose){
             board.restartButtonClick(mousePosition.x, mousePosition.y);
         }
     }
