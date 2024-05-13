@@ -2,8 +2,6 @@
 #include "../headers/Cell.hpp"
 
 Board::Board() {
-    rows = ROWS;
-    cols = COLS;
     gameOverWin = false;
     gameOverLose = false;
     easyMode = true;
@@ -30,8 +28,8 @@ void Board::draw(sf::RenderWindow& window) {
     eCellTexture.loadFromFile("res/ecell.png");
     eCellSprite.setTexture(eCellTexture);
 
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
+    for (int i = 0; i < ROWS; ++i) {
+        for (int j = 0; j < COLS; ++j) {
             if (cells[i][j].type == CellType::Empty && cells[i][j].isRevealed) {
                 drawSprite(window, eCellSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), 0, 0, CELL_SIZE, CELL_SIZE);
                 if (0 < cells[i][j].minesAround) {
@@ -62,11 +60,10 @@ void Board::drawSprite(sf::RenderWindow& window, sf::Sprite sprite, float posX, 
 }
 
 void Board::floodFill(int row, int col) {
-    if (row < 0 || row >= rows || col < 0 || col >= cols) return;
+    if (row < 0 || row >= ROWS || col < 0 || col >= COLS) return;
     if (cells[row][col].isRevealed || cells[row][col].type == CellType::Mine || (gameOverLose || gameOverWin)) return;
 
     cells[row][col].isRevealed = true;
-    revealedCount++;
 
     if (cells[row][col].type == CellType::Empty && cells[row][col].minesAround < 3) {
         floodFill(row - 1, col);
@@ -78,8 +75,8 @@ void Board::floodFill(int row, int col) {
 
 void Board::lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
     if (gameOverLose) {
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
+        for (int i = 0; i < ROWS; ++i) {
+            for (int j = 0; j < COLS; ++j) {
                 if (cells[i][j].type == CellType::Mine || cells[i][j].type == CellType::Flag) {
                     drawSprite(window, numberSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), CELL_SIZE * 10, 0, CELL_SIZE, CELL_SIZE);
                 }
@@ -92,19 +89,19 @@ void Board::lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
         sf::Texture restartTexture;
         restartTexture.loadFromFile("res/restart_button.png");
         restartSprite.setTexture(restartTexture);
-        drawSprite(window, restartSprite, CELL_SIZE * rows / 2 - 16, CELL_SIZE * cols / 2 - 16, 0, 0, CELL_SIZE, CELL_SIZE);
+        drawSprite(window, restartSprite, CELL_SIZE * ROWS / 2 - 16, CELL_SIZE * COLS / 2 - 16, 0, 0, CELL_SIZE, CELL_SIZE);
         sf::Sprite lSprite;
         sf::Texture lTexture;
         lTexture.loadFromFile("res/lose_screen.png");
         lSprite.setTexture(lTexture);
-        drawSprite(window, lSprite, CELL_SIZE * rows / 2 - 100, CELL_SIZE * cols / 2 - 150, 0, 0, 200, CELL_SIZE * 2);
+        drawSprite(window, lSprite, CELL_SIZE * ROWS / 2 - 100, CELL_SIZE * COLS / 2 - 150, 0, 0, 200, CELL_SIZE * 2);
     }
 }
 
 void Board::winGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
     if (gameOverWin) {
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
+        for (int i = 0; i < ROWS; ++i) {
+            for (int j = 0; j < COLS; ++j) {
                 if (cells[i][j].type == CellType::Mine || cells[i][j].type == CellType::Flag) {
                     drawSprite(window, numberSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), CELL_SIZE * 10, 0, CELL_SIZE, CELL_SIZE);
                 }
@@ -117,12 +114,12 @@ void Board::winGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
         sf::Texture restartTexture;
         restartTexture.loadFromFile("res/restart_button.png");
         restartSprite.setTexture(restartTexture);
-        drawSprite(window, restartSprite, CELL_SIZE * rows / 2 - 16, CELL_SIZE * cols / 2 - 16, 0, 0, CELL_SIZE, CELL_SIZE);
+        drawSprite(window, restartSprite, CELL_SIZE * ROWS / 2 - 16, CELL_SIZE * COLS / 2 - 16, 0, 0, CELL_SIZE, CELL_SIZE);
         sf::Sprite winSprite;
         sf::Texture winTexture;
         winTexture.loadFromFile("res/win_screen.png");
         winSprite.setTexture(winTexture);
-        drawSprite(window, winSprite, CELL_SIZE * rows / 2 - 100, CELL_SIZE * cols / 2 - 100, 0, 0, 200, CELL_SIZE * 2);
+        drawSprite(window, winSprite, CELL_SIZE * ROWS / 2 - 100, CELL_SIZE * COLS / 2 - 100, 0, 0, 200, CELL_SIZE * 2);
     }
 }
 
@@ -160,20 +157,20 @@ void Board::restartBoardR() {
 }
 
 void Board::calculateNumbers() {
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
+    for (int i = 0; i < ROWS; ++i) {
+        for (int j = 0; j < COLS; ++j) {
             if (cells[i][j].type == CellType::Empty) {
-                int mineCount = 0;
+                int minesCount = 0;
                 for (int di = -1; di <= 1; ++di) {
                     for (int dj = -1; dj <= 1; ++dj) {
                         int ni = i + di;
                         int nj = j + dj;
-                        if (ni >= 0 && ni < rows && nj >= 0 && nj < cols && cells[ni][nj].type == CellType::Mine) {
-                            mineCount++;
+                        if (ni >= 0 && ni < ROWS && nj >= 0 && nj < COLS && cells[ni][nj].type == CellType::Mine) {
+                            minesCount++;
                         }
                     }
                 }
-                cells[i][j].minesAround = mineCount;
+                cells[i][j].minesAround = minesCount;
             }
         }
     }
@@ -191,25 +188,25 @@ void Board::firstMove(int row, int col) {
     firstMoveLogic(row - 1, col + 1);
 }
 
-void Board::firstMoveLogic(int r, int c) {
-    if (cells[r][c].type == CellType::Mine) {
-        cells[r][c].type = CellType::Empty;
-        int row = rand() % rows;
-        int col = rand() % cols;
-        if (cells[row][col].type != CellType::Mine && (row != r && col != c)) {
-            cells[row][col].type = CellType::Mine;
+void Board::firstMoveLogic(int x, int y) {
+    if (cells[x][y].type == CellType::Mine) {
+        cells[x][y].type = CellType::Empty;
+        int xRand = rand() % ROWS;
+        int yRand = rand() % COLS;
+        if (cells[xRand][yRand].type != CellType::Mine && (xRand != x && yRand != y)) {
+            cells[xRand][yRand].type = CellType::Mine;
         }
     }
 }
 
 void Board::generateBoard() {
-    cells.assign(rows, std::vector<Cell>(cols, Cell()));
+    cells.assign(ROWS, std::vector<Cell>(COLS, Cell()));
     int placedMines = 0;
     while (placedMines < mineCount) {
-        int row = rand() % rows;
-        int col = rand() % cols;
-        if (cells[row][col].type != CellType::Mine) {
-            cells[row][col].type = CellType::Mine;
+        int xRand = rand() % ROWS;
+        int yRand = rand() % COLS;
+        if (cells[xRand][yRand].type != CellType::Mine) {
+            cells[xRand][yRand].type = CellType::Mine;
             placedMines++;
         }
     }
@@ -220,8 +217,8 @@ void Board::generateBoard() {
 }
 
 void Board::restartButtonClick(float x, float y) {\
-    if (x > static_cast<float>(CELL_SIZE * rows / 2 - 16) && x < static_cast<float>(CELL_SIZE * cols / 2 + 16) &&
-    y > static_cast<float>(CELL_SIZE * cols / 2 - 16) && y < static_cast<float>(CELL_SIZE * cols / 2 + 16)){
+    if (x > static_cast<float>(CELL_SIZE * ROWS / 2 - 16) && x < static_cast<float>(CELL_SIZE * COLS / 2 + 16) &&
+    y > static_cast<float>(CELL_SIZE * COLS / 2 - 16) && y < static_cast<float>(CELL_SIZE * COLS / 2 + 16)){
         step = 0;
         gameOverLose = false;
         gameOverWin = false;

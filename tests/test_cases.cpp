@@ -5,59 +5,63 @@
 TEST(HelloTest, BasicAssertions0)
 {
     Board board;
-    board.cells[0][0].type = CellType::Empty;
-    board.step = 1;
+    std::vector<std::vector<Cell>> tmp = board.getCells();
+    tmp[0][0].type = CellType::Empty;
+    board.setCells(tmp);
+    board.setStep(1);
     board.revealCell(0, 0);
-    EXPECT_EQ(board.cells[0][0].isRevealed, true);
+    EXPECT_EQ(board.getCells()[0][0].isRevealed, true);
 }
 TEST(HelloTest, BasicAssertions1)
 {
     Board board;
-    board.step = 1;
+    board.setStep(1);
     board.putFlag(0, 0);
-    EXPECT_EQ(board.cells[0][0].type, CellType::Flag);
+    EXPECT_EQ(board.getCells()[0][0].type, CellType::Flag);
 }
 TEST(HelloTest, BasicAssertions2)
 {
     Board board;
     board.switchMode();
-    EXPECT_EQ(board.easyMode, false);
+    EXPECT_EQ(board.getMode(), false);
 }
 TEST(HelloTest, BasicAssertions2f)
 {
     Board board;
     board.switchMode();
     board.switchMode();
-    EXPECT_EQ(board.easyMode, true);
+    EXPECT_EQ(board.getMode(), true);
 }
 TEST(HelloTest, BasicAssertions3)
 {
     Board board;
-    board.foundMines = 10;
+    board.setFoundMines(10);
     board.restartBoardR();
-    EXPECT_EQ(board.foundMines, 0);
+    EXPECT_EQ(board.getFoundMines(), 0);
 }
 TEST(HelloTest, BasicAssertions4)
 {
     Board board;
     board.putFlag(0, 0);
-    EXPECT_EQ(board.foundMines, 0);
+    EXPECT_EQ(board.getFoundMines(), 0);
 }
 TEST(HelloTest, BasicAssertions5)
 {
     Board board;
-    board.step = 1;
+    board.setStep(1);
     board.putFlag(0, 0);
-    EXPECT_EQ(board.foundMines, 1);
+    EXPECT_EQ(board.getFoundMines(), 1);
 }
 TEST(HelloTest, BasicAssertions6)
 {   
     sf::RenderWindow window;
     Board board;
-    board.cells[1][1].type = CellType::Mine;
-    board.cells[1][1].isRevealed = true;
+    std::vector<std::vector<Cell>> tmp = board.getCells();
+    tmp[1][1].type = CellType::Mine;
+    tmp[1][1].isRevealed = true;
+    board.setCells(tmp);
     board.draw(window);
-    EXPECT_EQ(board.gameOverLose, true);
+    EXPECT_EQ(board.getGameOverLose(), true);
 }
 
 

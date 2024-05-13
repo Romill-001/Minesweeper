@@ -14,12 +14,11 @@
 #define SCREEN_WIDTH 640
 #define ROWS 20
 #define COLS 20
-#define BOMB_C_EASY 135
+#define BOMB_C_EASY 120
 #define BOMB_C_HARD 210
 
 class Board {
 public:
-
     Board();
 
     void drawSprite(sf::RenderWindow& window, sf::Sprite sprite,  float posX, float posY, int posRectX, int posRectY, int rectW, int rectH);
@@ -46,25 +45,53 @@ public:
 
     void switchMode();
 
-    bool gameOverWin;
-    bool gameOverLose;
-    int rows;
-    int cols;
-    int mineCount;
-    int revealedCount;
-    int step;
-    int foundMines; 
-    bool easyMode;
-    std::vector<std::vector<Cell>> cells;
+    bool getGameOverWin() {return gameOverWin;}
+
+    void setGameOverWin(const bool gameState) {gameOverWin = gameState;}
+
+    bool getGameOverLose() {return gameOverLose;}
+
+    void setGameOverLose(const bool gameState) {gameOverLose = gameState;}
     
+    int getMineCount() {return mineCount;}
+
+    void setMineCount(const int newCount) {mineCount = newCount;}
+
+    int getStep() {return step;}
+
+    void setStep(const int newStep) {step = newStep;}
+
+    int getFoundMines() {return foundMines;}
+
+    void setFoundMines(const int newCount) {foundMines = newCount;}
+
+    bool getMode() {return easyMode;}
+
+    void setMode(const bool modeState) {easyMode = modeState;}
+
+    std::vector<std::vector<Cell>> getCells() {return cells;}
+
+    void setCells(const std::vector<std::vector<Cell>> newCells) {cells = newCells;}
 private:
+    bool gameOverWin;
+
+    bool gameOverLose;
+
+    int mineCount;
+
+    int step;
+
+    int foundMines; 
+
+    bool easyMode;
+
+    std::vector<std::vector<Cell>> cells;
 
     void calculateNumbers();
 
     void firstMove(int r, int c);
 
     void firstMoveLogic(int r, int c);
-
 
     void generateBoard();
 };
