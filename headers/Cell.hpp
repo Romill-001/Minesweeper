@@ -3,17 +3,16 @@
 
 enum class CellType {
     Empty,
-    Mine,
-    Flag
+    Mine
 };
 
-class Cell
-{
+class Cell {
 public:
+    Cell();
     CellType type;
     bool isRevealed;
     int minesAround;
-    Cell();
+    bool isFagged;
 };
 
 #endif //CELL_HPP

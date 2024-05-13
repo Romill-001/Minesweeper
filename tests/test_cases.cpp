@@ -17,7 +17,7 @@ TEST(HelloTest, BasicAssertions1)
     Board board;
     board.setStep(1);
     board.putFlag(0, 0);
-    EXPECT_EQ(board.getCells()[0][0].type, CellType::Flag);
+    EXPECT_EQ(board.getCells()[0][0].isFagged, true);
 }
 TEST(HelloTest, BasicAssertions2)
 {

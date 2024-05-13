@@ -38,8 +38,8 @@ void Board::draw(sf::RenderWindow& window) {
             } else if (cells[i][j].type == CellType::Mine && cells[i][j].isRevealed) {
                 drawSprite(window, numberSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), CELL_SIZE * 10, 0, CELL_SIZE, CELL_SIZE);
                 gameOverLose = true;
-            } else if (cells[i][j].type == CellType::Flag) {
-                if (mineCount == foundMines) {gameOverWin = true;}
+            } else if (cells[i][j].isFagged) {
+                isWin();
                 drawSprite(window, numberSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), CELL_SIZE * 9, 0, CELL_SIZE, CELL_SIZE);
             } else {
                 drawSprite(window, cellSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), 0, 0, CELL_SIZE, CELL_SIZE);
@@ -77,7 +77,7 @@ void Board::lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
     if (gameOverLose) {
         for (int i = 0; i < ROWS; ++i) {
             for (int j = 0; j < COLS; ++j) {
-                if (cells[i][j].type == CellType::Mine || cells[i][j].type == CellType::Flag) {
+                if (cells[i][j].type == CellType::Mine) {
                     drawSprite(window, numberSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), CELL_SIZE * 10, 0, CELL_SIZE, CELL_SIZE);
                 }
             }
@@ -98,11 +98,23 @@ void Board::lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
     }
 }
 
+void Board::isWin() {
+    int tmp = 0;
+    for (int i = 0; i < ROWS; ++i) {
+        for (int j = 0; j < COLS; ++j) {
+            if (cells[i][j].type == CellType::Mine && cells[i][j].isFagged) {
+                tmp++;
+            }
+        }
+    }
+    if (tmp == mineCount && tmp == foundMines)
+        gameOverWin = true;
+}
 void Board::winGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
     if (gameOverWin) {
         for (int i = 0; i < ROWS; ++i) {
             for (int j = 0; j < COLS; ++j) {
-                if (cells[i][j].type == CellType::Mine || cells[i][j].type == CellType::Flag) {
+                if (cells[i][j].type == CellType::Mine) {
                     drawSprite(window, numberSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), CELL_SIZE * 10, 0, CELL_SIZE, CELL_SIZE);
                 }
             }
@@ -137,9 +149,10 @@ void Board::revealCell(int row, int col) {
 
 void Board::putFlag(int row, int col) {
     if (step == 1 && (!gameOverLose && !gameOverWin)) {
-        if (!cells[row][col].isRevealed)
-            cells[row][col].type = CellType::Flag;
-        foundMines++;
+        if (!cells[row][col].isRevealed) {
+            cells[row][col].isFagged = true;
+            foundMines++;
+        }
     } else {
         return;
     }

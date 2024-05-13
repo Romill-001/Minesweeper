@@ -29,6 +29,8 @@ public:
 
     void lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite);
 
+    void isWin();
+    
     void winGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite);
 
     void revealCell(int row, int col);
