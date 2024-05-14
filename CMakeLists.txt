@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(Minesweeper)
 
+set (CMAKE_CXX_STANDARD 11)
+
 set(SFML_INSTALL_DIR ${CMAKE_BINARY_DIR}/SFML)
 
 if(NOT EXISTS ${SFML_INSTALL_DIR})
