@@ -46,8 +46,8 @@ void Board::draw(sf::RenderWindow& window) {
             }
         }
     }
-    winGameScreen(window, numberSprite);
-    lostGameScreen(window, numberSprite);
+    gameOverScreen(window, numberSprite, gameOverWin, "res/win_screen.png");
+    gameOverScreen(window, numberSprite, gameOverLose,"res/lose_screen.png");
     drawStatusBar(window);
     drawMinesCount(window);
     window.display();
@@ -73,30 +73,30 @@ void Board::floodFill(int row, int col) {
     } 
 }
 
-void Board::lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
-    if (gameOverLose) {
-        for (int i = 0; i < ROWS; ++i) {
-            for (int j = 0; j < COLS; ++j) {
-                if (cells[i][j].type == CellType::Mine) {
-                    drawSprite(window, numberSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), CELL_SIZE * 10, 0, CELL_SIZE, CELL_SIZE);
-                }
-            }
-        }
-        sf::RectangleShape overlay(sf::Vector2f(window.getSize().x, window.getSize().y));
-        overlay.setFillColor(sf::Color(128, 128, 128, 200));
-        window.draw(overlay);
-        sf::Sprite restartSprite;
-        sf::Texture restartTexture;
-        restartTexture.loadFromFile("res/restart_button.png");
-        restartSprite.setTexture(restartTexture);
-        drawSprite(window, restartSprite, CELL_SIZE * ROWS / 2 - 16, CELL_SIZE * COLS / 2 - 16, 0, 0, CELL_SIZE, CELL_SIZE);
-        sf::Sprite lSprite;
-        sf::Texture lTexture;
-        lTexture.loadFromFile("res/lose_screen.png");
-        lSprite.setTexture(lTexture);
-        drawSprite(window, lSprite, CELL_SIZE * ROWS / 2 - 100, CELL_SIZE * COLS / 2 - 150, 0, 0, 200, CELL_SIZE * 2);
-    }
-}
+// void Board::lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
+//     if (gameOverLose) {
+//         for (int i = 0; i < ROWS; ++i) {
+//             for (int j = 0; j < COLS; ++j) {
+//                 if (cells[i][j].type == CellType::Mine) {
+//                     drawSprite(window, numberSprite, static_cast<float>(CELL_SIZE * j), static_cast<float>(CELL_SIZE * i + CELL_SIZE), CELL_SIZE * 10, 0, CELL_SIZE, CELL_SIZE);
+//                 }
+//             }
+//         }
+//         sf::RectangleShape overlay(sf::Vector2f(window.getSize().x, window.getSize().y));
+//         overlay.setFillColor(sf::Color(128, 128, 128, 200));
+//         window.draw(overlay);
+//         sf::Sprite restartSprite;
+//         sf::Texture restartTexture;
+//         restartTexture.loadFromFile("res/restart_button.png");
+//         restartSprite.setTexture(restartTexture);
+//         drawSprite(window, restartSprite, CELL_SIZE * ROWS / 2 - 16, CELL_SIZE * COLS / 2 - 16, 0, 0, CELL_SIZE, CELL_SIZE);
+//         sf::Sprite lSprite;
+//         sf::Texture lTexture;
+//         lTexture.loadFromFile("res/lose_screen.png");
+//         lSprite.setTexture(lTexture);
+//         drawSprite(window, lSprite, CELL_SIZE * ROWS / 2 - 100, CELL_SIZE * COLS / 2 - 150, 0, 0, 200, CELL_SIZE * 2);
+//     }
+// }
 
 void Board::isWin() {
     int tmp = 0;
@@ -110,8 +110,8 @@ void Board::isWin() {
     if (tmp == mineCount && tmp == foundMines)
         gameOverWin = true;
 }
-void Board::winGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
-    if (gameOverWin) {
+void Board::gameOverScreen(sf::RenderWindow& window, sf::Sprite numberSprite, bool gameState, std::string path) {
+    if (gameState) {
         for (int i = 0; i < ROWS; ++i) {
             for (int j = 0; j < COLS; ++j) {
                 if (cells[i][j].type == CellType::Mine) {
@@ -129,7 +129,7 @@ void Board::winGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite) {
         drawSprite(window, restartSprite, CELL_SIZE * ROWS / 2 - 16, CELL_SIZE * COLS / 2 - 16, 0, 0, CELL_SIZE, CELL_SIZE);
         sf::Sprite winSprite;
         sf::Texture winTexture;
-        winTexture.loadFromFile("res/win_screen.png");
+        winTexture.loadFromFile(path);
         winSprite.setTexture(winTexture);
         drawSprite(window, winSprite, CELL_SIZE * ROWS / 2 - 100, CELL_SIZE * COLS / 2 - 100, 0, 0, 200, CELL_SIZE * 2);
     }
@@ -273,3 +273,31 @@ void Board::switchMode() {
     }
     restartBoardR();
 }
+
+bool Board::getGameOverWin() {return gameOverWin;}
+
+void Board::setGameOverWin(const bool gameState) {gameOverWin = gameState;}
+
+bool Board::getGameOverLose() {return gameOverLose;}
+
+void Board::setGameOverLose(const bool gameState) {gameOverLose = gameState;}
+
+int Board::getMineCount() {return mineCount;}
+
+void Board::setMineCount(const int newCount) {mineCount = newCount;}
+
+int Board::getStep() {return step;}
+
+void Board::setStep(const int newStep) {step = newStep;}
+
+int Board::getFoundMines() {return foundMines;}
+
+void Board::setFoundMines(const int newCount) {foundMines = newCount;}
+
+bool Board::getMode() {return easyMode;}
+
+void Board::setMode(const bool modeState) {easyMode = modeState;}
+
+std::vector<std::vector<Cell>> Board::getCells() {return cells;}
+
+void Board::setCells(const std::vector<std::vector<Cell>> newCells) {cells = newCells;}

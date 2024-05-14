@@ -27,11 +27,9 @@ public:
 
     void floodFill(int row, int col);
 
-    void lostGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite);
-
     void isWin();
     
-    void winGameScreen(sf::RenderWindow& window, sf::Sprite numberSprite);
+    void gameOverScreen(sf::RenderWindow& window, sf::Sprite numberSprite, bool gameState, std::string path);
 
     void revealCell(int row, int col);
 
@@ -47,33 +45,33 @@ public:
 
     void switchMode();
 
-    bool getGameOverWin() {return gameOverWin;}
+    bool getGameOverWin();
 
-    void setGameOverWin(const bool gameState) {gameOverWin = gameState;}
+    void setGameOverWin(const bool gameState);
 
-    bool getGameOverLose() {return gameOverLose;}
+    bool getGameOverLose();
 
-    void setGameOverLose(const bool gameState) {gameOverLose = gameState;}
+    void setGameOverLose(const bool gameState);
     
-    int getMineCount() {return mineCount;}
+    int getMineCount();
 
-    void setMineCount(const int newCount) {mineCount = newCount;}
+    void setMineCount(const int newCount);
 
-    int getStep() {return step;}
+    int getStep();
 
-    void setStep(const int newStep) {step = newStep;}
+    void setStep(const int newStep);
 
-    int getFoundMines() {return foundMines;}
+    int getFoundMines();
 
-    void setFoundMines(const int newCount) {foundMines = newCount;}
+    void setFoundMines(const int newCount);
 
-    bool getMode() {return easyMode;}
+    bool getMode();
 
-    void setMode(const bool modeState) {easyMode = modeState;}
+    void setMode(const bool modeState);
 
-    std::vector<std::vector<Cell>> getCells() {return cells;}
+    std::vector<std::vector<Cell>> getCells();
 
-    void setCells(const std::vector<std::vector<Cell>> newCells) {cells = newCells;}
+    void setCells(const std::vector<std::vector<Cell>> newCells);
 private:
     bool gameOverWin;
 
